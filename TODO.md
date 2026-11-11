@@ -6,7 +6,8 @@
 
 ## Role-based authentication and demo access
 - [ ] Users can sign in as Patient or Doctor/Admin, see role-appropriate navigation, and log out back to the sign-in screen.
-- [ ] The prototype’s quick testing accounts remain available as clearly labeled demo accounts so the assignment walkthrough works before Firebase credentials are connected.
+- [ ] The sign-in screen starts with blank email and password fields, does not expose quick-login cards, and lets visitors manually enter saved or Firebase credentials.
+- [ ] Demo doctor accounts are available for the walkthrough with distinct notification feeds for Dr. Sello Nthunya, Dr. Mathepelo Mofokeng, Dr. Kabelo Rasekoai, and Dr. Ntate Mokete.
 - [ ] Firebase Authentication is used when Firebase configuration is present; private credentials are not committed.
 
 ## Patient doctor discovery and booking

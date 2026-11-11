@@ -96,24 +96,19 @@ function Modal({ title, eyebrow, onClose, children, wide = false }: { title: str
 }
 
 function LoginScreen() {
-  const { signIn, isDemoMode } = useHubsStore();
+  const { signIn } = useHubsStore();
   const [role, setRole] = useState<Role>('patient');
-  const [email, setEmail] = useState('toka@hubs.demo');
-  const [password, setPassword] = useState('demo123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  const chooseDemo = (value: Role) => {
-    setRole(value);
-    setEmail(value === 'patient' ? 'toka@hubs.demo' : 'sello@hubs.demo');
-    setPassword('demo123');
-    setError('');
-  };
+  const chooseRole = (value: Role) => { setRole(value); setError(''); };
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
     setBusy(true); setError('');
     try { await signIn(email, password, role); } catch (reason) { setError(reason instanceof Error ? reason.message : 'We could not sign you in.'); } finally { setBusy(false); }
   };
-  return <main className="login-page"><div className="login-ambient ambient-one" /><div className="login-ambient ambient-two" /><section className="login-intro"><div className="intro-top"><Logo /><span className="secure-pill"><ShieldCheck size={15} /> Secure medical portal</span></div><div className="intro-copy"><div className="eyebrow eyebrow-light">A clearer way to care</div><h1>Find the right care.<br /><em>Keep it close.</em></h1><p>HUBS brings doctor discovery, appointments, and the details around your care into one calm, connected place.</p></div><div className="intro-footer"><div className="pulse-line"><span className="pulse-point" /><span /><span /><span /><span className="pulse-point" /></div><p>Designed for patients and the people who care for them.</p></div></section><section className="login-panel"><div className="login-card"><div className="mobile-brand"><Logo /></div><div className="eyebrow">Welcome back</div><h2>Sign in to HUBS</h2><p className="login-subtitle">Choose your workspace to continue.</p><div className="role-switch" role="tablist" aria-label="Choose account role"><button className={role === 'patient' ? 'selected' : ''} onClick={() => chooseDemo('patient')}><UserRound size={17} /> Patient</button><button className={role === 'doctor' ? 'selected' : ''} onClick={() => chooseDemo('doctor')}><Stethoscope size={17} /> Doctor / Admin</button></div><form onSubmit={submit} className="login-form"><label>Email or username<input value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="username" placeholder="you@example.com" /></label><label>Password<div className="password-field"><input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" placeholder="Enter password" /><span>•••</span></div></label>{error && <div className="form-error"><CircleAlert size={16} />{error}</div>}<button className="primary-button button-wide" disabled={busy}>{busy ? 'Signing you in…' : 'Sign in'}<ArrowRight size={17} /></button></form><div className="demo-divider"><span>{isDemoMode ? 'Quick testing accounts' : 'Need a demo account?'}</span></div><div className="demo-accounts"><button onClick={() => chooseDemo('patient')}><Avatar initials="TM" color="#d7efe5" size="sm" /><span><strong>Toka Mokoena</strong><small>Patient · demo123</small></span><ArrowRight size={15} /></button><button onClick={() => chooseDemo('doctor')}><Avatar initials="SN" color="#e7def9" size="sm" /><span><strong>Dr. Sello Nthunya</strong><small>Doctor · demo123</small></span><ArrowRight size={15} /></button></div><p className="login-legal">By signing in, you agree to the HUBS <button>privacy policy</button> and <button>terms of care</button>.</p></div></section></main>;
+  return <main className="login-page"><div className="login-ambient ambient-one" /><div className="login-ambient ambient-two" /><section className="login-intro"><div className="intro-top"><Logo /><span className="secure-pill"><ShieldCheck size={15} /> Secure medical portal</span></div><div className="intro-copy"><div className="eyebrow eyebrow-light">A clearer way to care</div><h1>Find the right care.<br /><em>Keep it close.</em></h1><p>HUBS brings doctor discovery, appointments, and the details around your care into one calm, connected place.</p></div><div className="intro-footer"><div className="pulse-line"><span className="pulse-point" /><span /><span /><span /><span className="pulse-point" /></div><p>Designed for patients and the people who care for them.</p></div></section><section className="login-panel"><div className="login-card"><div className="mobile-brand"><Logo /></div><div className="eyebrow">Welcome back</div><h2>Sign in to HUBS</h2><p className="login-subtitle">Choose your workspace to continue.</p><div className="role-switch" role="tablist" aria-label="Choose account role"><button type="button" className={role === 'patient' ? 'selected' : ''} onClick={() => chooseRole('patient')}><UserRound size={17} /> Patient</button><button type="button" className={role === 'doctor' ? 'selected' : ''} onClick={() => chooseRole('doctor')}><Stethoscope size={17} /> Doctor / Admin</button></div><form onSubmit={submit} className="login-form"><label>Email or username<input value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="username" placeholder="you@example.com" /></label><label>Password<div className="password-field"><input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" placeholder="Enter password" /><span>•••</span></div></label>{error && <div className="form-error"><CircleAlert size={16} />{error}</div>}<button className="primary-button button-wide" disabled={busy}>{busy ? 'Signing you in…' : 'Sign in'}<ArrowRight size={17} /></button></form><p className="account-prompt">Don't have an account? <button type="button" onClick={() => setError('Please ask your HUBS administrator to create an account.')}>Sign in</button></p><p className="login-legal">By signing in, you agree to the HUBS <button type="button">privacy policy</button> and <button type="button">terms of care</button>.</p></div></section></main>;
 }
 
 function BookingModal({ doctor, onClose }: { doctor: Doctor; onClose: () => void }) {
@@ -217,7 +212,7 @@ function DoctorProfile({ doctor }: { doctor: Doctor }) {
 
 function DoctorWorkspace() {
   const { currentUser, doctors, notifications, signOutUser } = useHubsStore();
-  const doctor = doctors.find((item) => item.id === (currentUser?.id === 'doctor-mathepelo' ? 'dr-mathepelo' : 'dr-sello')) || doctors[0];
+  const doctor = doctors.find((item) => item.id === currentUser?.id.replace('doctor-', 'dr-')) || doctors[0];
   const [active, setActive] = useState('schedule');
   const [mobileOpen, setMobileOpen] = useState(false);
   const unread = notifications.filter((notification) => !notification.read).length;

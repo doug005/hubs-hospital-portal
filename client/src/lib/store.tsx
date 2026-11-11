@@ -51,6 +51,7 @@ export function HubsProvider({ children }: { children: ReactNode }) {
   }, [state]);
 
   const value = useMemo<StoreContextValue>(() => {
+    const visibleNotifications = state.notifications.filter((notification) => notification.userId === state.currentUser?.id || (!notification.userId && state.currentUser?.role === 'patient'));
     const signIn = async (email: string, password: string, role: Role) => {
       const normalized = email.trim().toLowerCase();
       const demoUser = demoUsers.find((user) => user.email === normalized && user.role === role);
@@ -131,6 +132,7 @@ export function HubsProvider({ children }: { children: ReactNode }) {
 
     return {
       ...state,
+      notifications: visibleNotifications,
       isDemoMode: !firebaseConfigured,
       signIn,
       signOutUser,

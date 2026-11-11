@@ -5,6 +5,8 @@ export const demoUsers: UserProfile[] = [
   { id: 'patient-mphonyane', name: 'Mphonyane Khubelu', email: 'mphonyane@hubs.demo', role: 'patient', avatar: 'MK', phone: '+266 6308 1550' },
   { id: 'doctor-sello', name: 'Dr. Sello Nthunya', email: 'sello@hubs.demo', role: 'doctor', avatar: 'SN', phone: '+266 5881 2201' },
   { id: 'doctor-mathepelo', name: 'Dr. Mathepelo Mofokeng', email: 'mathepelo@hubs.demo', role: 'doctor', avatar: 'MM', phone: '+266 5900 8032' },
+  { id: 'doctor-kabelo', name: 'Dr. Kabelo Rasekoai', email: 'kabelo@hubs.demo', role: 'doctor', avatar: 'KR', phone: '+266 5977 2140' },
+  { id: 'doctor-ntate', name: 'Dr. Ntate Mokete', email: 'ntate@hubs.demo', role: 'doctor', avatar: 'NM', phone: '+266 5922 1184' },
 ];
 
 export const doctors: Doctor[] = [
@@ -102,7 +104,15 @@ export const initialReviews: Review[] = [
 ];
 
 export const initialNotifications: AppNotification[] = [
-  { id: 'note-1', title: 'Appointment confirmed', body: 'Your visit with Dr. Sello Nthunya is confirmed for tomorrow at 10:30.', time: '12 min ago', read: false, kind: 'appointment' },
-  { id: 'note-2', title: 'A gentle reminder', body: 'Bring your latest blood pressure readings to your cardiology follow-up.', time: 'Yesterday', read: false, kind: 'reminder' },
-  { id: 'note-3', title: 'Welcome to HUBS', body: 'You can search specialists, book visits, and keep every detail in one place.', time: '3 days ago', read: true, kind: 'system' },
+  { id: 'note-1', userId: 'patient-toka', title: 'Appointment confirmed', body: 'Your visit with Dr. Sello Nthunya is confirmed for tomorrow at 10:30.', time: '12 min ago', read: false, kind: 'appointment' },
+  { id: 'note-2', userId: 'patient-toka', title: 'A gentle reminder', body: 'Bring your latest blood pressure readings to your cardiology follow-up.', time: 'Yesterday', read: false, kind: 'reminder' },
+  { id: 'note-3', userId: 'patient-toka', title: 'Welcome to HUBS', body: 'You can search specialists, book visits, and keep every detail in one place.', time: '3 days ago', read: true, kind: 'system' },
+  { id: 'note-sello-1', userId: 'doctor-sello', title: 'New appointment booked', body: 'Toka Mokoena booked a consultation for tomorrow at 10:30.', time: '12 min ago', read: false, kind: 'appointment' },
+  { id: 'note-sello-2', userId: 'doctor-sello', title: 'Patient note updated', body: 'Mphonyane Khubelu’s clinical note is ready to review.', time: 'Yesterday', read: false, kind: 'reminder' },
+  { id: 'note-mathepelo-1', userId: 'doctor-mathepelo', title: 'Follow-up awaiting review', body: 'Toka Mokoena has a cardiology follow-up request for Friday at 14:00.', time: '18 min ago', read: false, kind: 'appointment' },
+  { id: 'note-mathepelo-2', userId: 'doctor-mathepelo', title: 'Clinic profile viewed', body: 'Your public profile was viewed by 4 prospective patients this week.', time: '2 hours ago', read: true, kind: 'system' },
+  { id: 'note-kabelo-1', userId: 'doctor-kabelo', title: 'New patient enquiry', body: 'A patient is looking for a dermatologist near Maseru Skin & Wellness.', time: '24 min ago', read: false, kind: 'appointment' },
+  { id: 'note-kabelo-2', userId: 'doctor-kabelo', title: 'Availability reminder', body: 'You have 3 open slots on your public profile this week.', time: 'Yesterday', read: false, kind: 'reminder' },
+  { id: 'note-ntate-1', userId: 'doctor-ntate', title: 'Family appointment request', body: 'A new paediatric consultation request is ready for your review.', time: '35 min ago', read: false, kind: 'appointment' },
+  { id: 'note-ntate-2', userId: 'doctor-ntate', title: 'Welcome to your clinic workspace', body: 'Add availability to help families find a time that works for them.', time: 'Yesterday', read: true, kind: 'system' },
 ];

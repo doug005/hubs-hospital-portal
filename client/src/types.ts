@@ -54,6 +54,7 @@ export interface Review {
 
 export interface AppNotification {
   id: string;
+  userId?: string;
   title: string;
   body: string;
   time: string;
