@@ -82,6 +82,7 @@ export function HubsProvider({ children }: { children: ReactNode }) {
     const createAccount = async (name: string, email: string, password: string, role: Role) => {
       const normalized = email.trim().toLowerCase();
       const cleanName = name.trim();
+      if (role !== 'patient') throw new Error('Only patients can create a new account. Doctor accounts are created by a HUBS administrator.');
       if (!cleanName || !normalized || password.length < 6) throw new Error('Enter your name, a valid email, and a password with at least 6 characters.');
       if (state.users.some((user) => user.email === normalized)) throw new Error('An account with this email already exists. Try signing in instead.');
 

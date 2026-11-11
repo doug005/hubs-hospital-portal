@@ -85,6 +85,8 @@ h1, h2, h3 { letter-spacing: -.04em; }
 .form-error { color: var(--coral); background: var(--coral-soft); border-radius: 8px; padding: 11px 12px; display: flex; gap: 8px; align-items: flex-start; font-size: 12px; line-height: 1.45; }
 .account-prompt { color: #8a9d9b; font-size: 11px; text-align: center; margin-top: 18px; }
 .account-prompt button { background: transparent; color: var(--green-deep); font-weight: 700; padding: 0; text-decoration: underline; }
+.registration-note { display: flex; align-items: flex-start; gap: 7px; color: var(--green-deep); background: var(--green-soft); border-radius: 8px; padding: 10px 11px; font-size: 10px; line-height: 1.45; margin: -8px 0 18px; }
+.registration-note svg { flex: 0 0 auto; margin-top: 1px; }
 .demo-divider { display: flex; align-items: center; gap: 12px; color: #9aaba9; font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin: 32px 0 13px; }
 .demo-divider::before, .demo-divider::after { content: ''; height: 1px; flex: 1; background: #dce6e1; }
 .demo-accounts { display: grid; gap: 8px; }
