@@ -72,6 +72,7 @@ function Sidebar({ role, active, onNavigate, onLogout, currentUser, onClose }: {
     { id: 'schedule', label: 'Clinic schedule', icon: LayoutDashboard },
     { id: 'patients', label: 'My patients', icon: UsersRound },
     { id: 'profile', label: 'My public profile', icon: UserRound },
+    { id: 'reminders', label: 'Notifications', icon: Bell },
   ];
   const items = role === 'patient' ? patientItems : doctorItems;
   return <aside className="sidebar">
@@ -216,7 +217,7 @@ function DoctorWorkspace() {
   const [active, setActive] = useState('schedule');
   const [mobileOpen, setMobileOpen] = useState(false);
   const unread = notifications.filter((notification) => !notification.read).length;
-  return <div className="app-shell"><div className={`sidebar-wrap ${mobileOpen ? 'open' : ''}`}><Sidebar role="doctor" active={active} onNavigate={setActive} onLogout={signOutUser} currentUser={currentUser!} onClose={() => setMobileOpen(false)} /></div>{mobileOpen && <button className="mobile-scrim" onClick={() => setMobileOpen(false)} aria-label="Close menu" />}<main className="workspace"><TopBar title={active === 'schedule' ? 'Clinic schedule' : active === 'patients' ? 'My patients' : 'My public profile'} eyebrow="Doctor workspace" unread={unread} onNotify={() => setActive('schedule')} onMenu={() => setMobileOpen(true)} onProfile={() => setActive('profile')} /><div className="workspace-content">{active === 'schedule' && <DoctorSchedule doctor={doctor} />}{active === 'patients' && <DoctorPatients doctor={doctor} />}{active === 'profile' && <DoctorProfile doctor={doctor} />}</div></main></div>;
+  return <div className="app-shell"><div className={`sidebar-wrap ${mobileOpen ? 'open' : ''}`}><Sidebar role="doctor" active={active} onNavigate={setActive} onLogout={signOutUser} currentUser={currentUser!} onClose={() => setMobileOpen(false)} /></div>{mobileOpen && <button className="mobile-scrim" onClick={() => setMobileOpen(false)} aria-label="Close menu" />}<main className="workspace"><TopBar title={active === 'schedule' ? 'Clinic schedule' : active === 'patients' ? 'My patients' : active === 'profile' ? 'My public profile' : 'Notifications'} eyebrow="Doctor workspace" unread={unread} onNotify={() => setActive('reminders')} onMenu={() => setMobileOpen(true)} onProfile={() => setActive('profile')} /><div className="workspace-content">{active === 'schedule' && <DoctorSchedule doctor={doctor} />}{active === 'patients' && <DoctorPatients doctor={doctor} />}{active === 'profile' && <DoctorProfile doctor={doctor} />}{active === 'reminders' && <Reminders />}</div></main></div>;
 }
 
 export default function App() {
