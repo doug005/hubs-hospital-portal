@@ -1,0 +1,7 @@
+{
+  "routes": [
+    { "path": "/", "title": "HUBS Sign in" },
+    { "path": "/patient", "title": "Patient dashboard" },
+    { "path": "/doctor", "title": "Doctor dashboard" }
+  ]
+}

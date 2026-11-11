@@ -1,0 +1,3 @@
+{
+  "rewrites": [{ "source": "/((?!manus-routes\\.json|favicon\\.ico).*)", "destination": "/index.html" }]
+}
