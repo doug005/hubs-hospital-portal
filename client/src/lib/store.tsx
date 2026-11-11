@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
 import { addDoc, collection, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { demoUsers, doctors as seedDoctors, initialAppointments, initialNotifications, initialReviews } from '../data/demoData';
 import { firebaseAuth, firebaseConfigured, firestore } from './firebase';
@@ -10,6 +10,7 @@ const STORAGE_KEY = 'hubs-demo-state-v1';
 interface StoreContextValue extends DemoState {
   isDemoMode: boolean;
   signIn: (email: string, password: string, role: Role) => Promise<void>;
+  createAccount: (name: string, email: string, password: string, role: Role) => Promise<void>;
   signOutUser: () => Promise<void>;
   bookAppointment: (input: Omit<Appointment, 'id' | 'status'>) => void;
   cancelAppointment: (id: string) => void;
@@ -27,6 +28,7 @@ const StoreContext = createContext<StoreContextValue | null>(null);
 
 const freshState = (): DemoState => ({
   currentUser: null,
+  users: demoUsers,
   appointments: initialAppointments,
   notifications: initialNotifications,
   doctors: seedDoctors,
@@ -37,7 +39,9 @@ const freshState = (): DemoState => ({
 function getStoredState(): DemoState {
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) as DemoState : freshState();
+    if (!stored) return freshState();
+    const parsed = JSON.parse(stored) as Partial<DemoState>;
+    return { ...freshState(), ...parsed, users: parsed.users || demoUsers };
   } catch {
     return freshState();
   }
@@ -54,8 +58,8 @@ export function HubsProvider({ children }: { children: ReactNode }) {
     const visibleNotifications = state.notifications.filter((notification) => notification.userId === state.currentUser?.id || (!notification.userId && state.currentUser?.role === 'patient'));
     const signIn = async (email: string, password: string, role: Role) => {
       const normalized = email.trim().toLowerCase();
-      const demoUser = demoUsers.find((user) => user.email === normalized && user.role === role);
-      if (demoUser && password === 'demo123') {
+      const demoUser = state.users.find((user) => user.email === normalized && user.role === role);
+      if (demoUser && (password === 'demo123' || state.users.some((user) => user.id === demoUser.id && user.id.startsWith('local-')))) {
         setState((current) => ({ ...current, currentUser: demoUser }));
         return;
       }
@@ -73,6 +77,25 @@ export function HubsProvider({ children }: { children: ReactNode }) {
         avatar: (credential.user.displayName || normalized).split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase(),
       };
       setState((current) => ({ ...current, currentUser: profile }));
+    };
+
+    const createAccount = async (name: string, email: string, password: string, role: Role) => {
+      const normalized = email.trim().toLowerCase();
+      const cleanName = name.trim();
+      if (!cleanName || !normalized || password.length < 6) throw new Error('Enter your name, a valid email, and a password with at least 6 characters.');
+      if (state.users.some((user) => user.email === normalized)) throw new Error('An account with this email already exists. Try signing in instead.');
+
+      if (firebaseConfigured && firebaseAuth && firestore) {
+        const credential = await createUserWithEmailAndPassword(firebaseAuth, normalized, password);
+        await updateProfile(credential.user, { displayName: cleanName });
+        const profile: UserProfile = { id: credential.user.uid, name: cleanName, email: normalized, role, avatar: cleanName.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase() };
+        await setDoc(doc(firestore, 'users', profile.id), profile);
+        setState((current) => ({ ...current, users: [...current.users, profile], currentUser: profile }));
+        return;
+      }
+
+      const profile: UserProfile = { id: `local-${Date.now()}`, name: cleanName, email: normalized, role, avatar: cleanName.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase() };
+      setState((current) => ({ ...current, users: [...current.users, profile], currentUser: profile }));
     };
 
     const signOutUser = async () => {
@@ -135,6 +158,7 @@ export function HubsProvider({ children }: { children: ReactNode }) {
       notifications: visibleNotifications,
       isDemoMode: !firebaseConfigured,
       signIn,
+      createAccount,
       signOutUser,
       bookAppointment,
       cancelAppointment,

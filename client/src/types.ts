@@ -64,6 +64,7 @@ export interface AppNotification {
 
 export interface DemoState {
   currentUser: UserProfile | null;
+  users: UserProfile[];
   appointments: Appointment[];
   notifications: AppNotification[];
   doctors: Doctor[];
