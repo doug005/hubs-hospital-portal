@@ -90,7 +90,11 @@ export function HubsProvider({ children }: { children: ReactNode }) {
         const credential = await createUserWithEmailAndPassword(firebaseAuth, normalized, password);
         await updateProfile(credential.user, { displayName: cleanName });
         const profile: UserProfile = { id: credential.user.uid, name: cleanName, email: normalized, role, avatar: cleanName.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase() };
-        await setDoc(doc(firestore, 'users', profile.id), profile);
+        try {
+          await setDoc(doc(firestore, 'users', profile.id), profile);
+        } catch (profileError) {
+          console.warn('Account created, but the Firestore profile mirror was unavailable.', profileError);
+        }
         setState((current) => ({ ...current, users: [...current.users, profile], currentUser: profile }));
         return;
       }

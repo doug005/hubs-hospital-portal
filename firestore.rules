@@ -7,7 +7,8 @@ service cloud.firestore {
 
     match /users/{uid} {
       allow read: if isSelf(uid) || isDoctor();
-      allow create, update: if isSelf(uid);
+      allow create: if isSelf(uid) && request.resource.data.role == 'patient';
+      allow update: if isSelf(uid) && resource.data.role == request.resource.data.role;
     }
 
     match /doctors/{doctorId} {
