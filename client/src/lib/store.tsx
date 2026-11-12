@@ -41,7 +41,10 @@ function getStoredState(): DemoState {
     const stored = window.localStorage.getItem(STORAGE_KEY);
     if (!stored) return freshState();
     const parsed = JSON.parse(stored) as Partial<DemoState>;
-    return { ...freshState(), ...parsed, users: parsed.users || demoUsers };
+    const restored = { ...freshState(), ...parsed, users: parsed.users || demoUsers };
+    restored.appointments = restored.appointments.map((appointment) => appointment.id === 'appt-001' && appointment.status === 'confirmed' ? { ...appointment, status: 'pending' } : appointment);
+    restored.notifications = restored.notifications.map((notification) => notification.id === 'note-1' && notification.title === 'Appointment confirmed' ? { ...notification, title: 'Appointment request sent', body: 'Your visit with Dr. Sello Nthunya is waiting for confirmation.', read: true } : notification);
+    return restored;
   } catch {
     return freshState();
   }

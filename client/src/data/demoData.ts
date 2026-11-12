@@ -81,7 +81,7 @@ const iso = (offset: number) => {
 
 export const initialAppointments: Appointment[] = [
   {
-    id: 'appt-001', patientId: 'patient-toka', patientName: 'Toka Mokoena', doctorId: 'dr-sello', doctorName: 'Dr. Sello Nthunya', specialty: 'General Practitioner', clinic: 'HUBS Central Clinic', date: iso(1), time: '10:30', type: 'Consultation', status: 'confirmed', reason: 'Annual wellness check',
+    id: 'appt-001', patientId: 'patient-toka', patientName: 'Toka Mokoena', doctorId: 'dr-sello', doctorName: 'Dr. Sello Nthunya', specialty: 'General Practitioner', clinic: 'HUBS Central Clinic', date: iso(1), time: '10:30', type: 'Consultation', status: 'pending', reason: 'Annual wellness check',
   },
   {
     id: 'appt-002', patientId: 'patient-toka', patientName: 'Toka Mokoena', doctorId: 'dr-mathepelo', doctorName: 'Dr. Mathepelo Mofokeng', specialty: 'Cardiologist', clinic: 'Maseru Heart Centre', date: iso(4), time: '14:00', type: 'Follow-up', status: 'pending', reason: 'Follow-up on blood pressure readings',
@@ -104,7 +104,7 @@ export const initialReviews: Review[] = [
 ];
 
 export const initialNotifications: AppNotification[] = [
-  { id: 'note-1', userId: 'patient-toka', title: 'Appointment confirmed', body: 'Your visit with Dr. Sello Nthunya is confirmed for tomorrow at 10:30.', time: '12 min ago', read: false, kind: 'appointment' },
+  { id: 'note-1', userId: 'patient-toka', title: 'Appointment request sent', body: 'Your visit with Dr. Sello Nthunya is waiting for confirmation.', time: '12 min ago', read: true, kind: 'appointment' },
   { id: 'note-2', userId: 'patient-toka', title: 'A gentle reminder', body: 'Bring your latest blood pressure readings to your cardiology follow-up.', time: 'Yesterday', read: false, kind: 'reminder' },
   { id: 'note-3', userId: 'patient-toka', title: 'Welcome to HUBS', body: 'You can search specialists, book visits, and keep every detail in one place.', time: '3 days ago', read: true, kind: 'system' },
   { id: 'note-sello-1', userId: 'doctor-sello', title: 'New appointment booked', body: 'Toka Mokoena booked a consultation for tomorrow at 10:30.', time: '12 min ago', read: false, kind: 'appointment' },
