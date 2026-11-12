@@ -110,18 +110,10 @@ export function HubsProvider({ children }: { children: ReactNode }) {
 
     const bookAppointment = (input: Omit<Appointment, 'id' | 'status'>) => {
       const id = `appt-${Date.now()}`;
-      const appointment: Appointment = { ...input, id, status: 'confirmed' };
+      const appointment: Appointment = { ...input, id, status: 'pending' };
       setState((current) => ({
         ...current,
         appointments: [appointment, ...current.appointments],
-        notifications: [{
-          id: `note-${Date.now()}`,
-          title: 'Appointment confirmed',
-          body: `Your visit with ${input.doctorName} is booked for ${input.date} at ${input.time}.`,
-          time: 'Just now',
-          read: false,
-          kind: 'appointment',
-        }, ...current.notifications],
       }));
       if (firestore && firebaseConfigured) {
         void addDoc(collection(firestore, 'appointments'), appointment);
@@ -146,8 +138,24 @@ export function HubsProvider({ children }: { children: ReactNode }) {
       if (firestore && firebaseConfigured) void setDoc(doc(firestore, 'availability', `${doctorId}-${slot.replace(':', '')}`), { doctorId, slot });
     };
     const updateAppointmentStatus = (id: string, status: AppointmentStatus) => {
-      setState((current) => ({ ...current, appointments: current.appointments.map((item) => item.id === id ? { ...item, status } : item) }));
+      const appointment = state.appointments.find((item) => item.id === id);
+      const shouldNotifyPatient = appointment && appointment.status !== 'confirmed' && status === 'confirmed';
+      const confirmationNotification = shouldNotifyPatient && appointment ? {
+        id: `note-${Date.now()}`,
+        userId: appointment.patientId,
+        title: 'Appointment confirmed',
+        body: `${appointment.doctorName} confirmed your visit for ${appointment.date} at ${appointment.time}.`,
+        time: 'Just now',
+        read: false,
+        kind: 'appointment' as const,
+      } : null;
+      setState((current) => ({
+        ...current,
+        appointments: current.appointments.map((item) => item.id === id ? { ...item, status } : item),
+        notifications: confirmationNotification ? [confirmationNotification, ...current.notifications] : current.notifications,
+      }));
       if (firestore && firebaseConfigured) void updateDoc(doc(firestore, 'appointments', id), { status });
+      if (firestore && firebaseConfigured && confirmationNotification) void addDoc(collection(firestore, 'notifications'), confirmationNotification);
     };
     const updateClinicalNote = (id: string, notes: string) => {
       setState((current) => ({ ...current, appointments: current.appointments.map((item) => item.id === id ? { ...item, notes } : item) }));
