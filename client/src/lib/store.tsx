@@ -114,12 +114,23 @@ export function HubsProvider({ children }: { children: ReactNode }) {
     const bookAppointment = (input: Omit<Appointment, 'id' | 'status'>) => {
       const id = `appt-${Date.now()}`;
       const appointment: Appointment = { ...input, id, status: 'pending' };
+      const doctorNotification: AppNotification = {
+        id: `note-${Date.now()}-doctor`,
+        userId: `doctor-${input.doctorId.replace(/^dr-/, '')}`,
+        title: 'New appointment request',
+        body: `${input.patientName} requested a ${input.type.toLowerCase()} for ${input.date} at ${input.time}. It is waiting for your confirmation.`,
+        time: 'Just now',
+        read: false,
+        kind: 'appointment',
+      };
       setState((current) => ({
         ...current,
         appointments: [appointment, ...current.appointments],
+        notifications: [doctorNotification, ...current.notifications],
       }));
       if (firestore && firebaseConfigured) {
         void addDoc(collection(firestore, 'appointments'), appointment);
+        void addDoc(collection(firestore, 'notifications'), doctorNotification);
       }
     };
 
