@@ -77,7 +77,7 @@ function Sidebar({ role, active, onNavigate, onLogout, currentUser, onClose }: {
   const items = role === 'patient' ? patientItems : doctorItems;
   return <aside className="sidebar">
     <div className="sidebar-top"><Logo /><button className="icon-button mobile-only" onClick={onClose} aria-label="Close navigation"><X size={19} /></button></div>
-    <div className="side-profile"><Avatar initials={currentUser.avatar} color="#c6e9da" size="lg" /><div><strong>{currentUser.name}</strong><span>{role === 'patient' ? 'Patient account' : 'Doctor account'}</span></div><button className="more-button" aria-label="Account options"><MoreHorizontal size={18} /></button></div>
+    <div className="side-profile"><Avatar initials={currentUser.avatar} color="#c6e9da" size="lg" /><div><strong>{currentUser.name}</strong><span>{role === 'patient' ? 'Patient account' : 'Doctor account'}</span></div>{role === 'patient' && <button className="more-button" aria-label="Account options"><MoreHorizontal size={18} /></button>}</div>
     <div className="side-label">Workspace</div>
     <nav className="side-nav">{items.map(({ id, label, icon: Icon }) => <button key={id} className={active === id ? 'active' : ''} onClick={() => { onNavigate(id); onClose?.(); }}><Icon size={18} strokeWidth={active === id ? 2.4 : 1.8} /><span>{label}</span>{active === id && <ChevronRight size={15} className="nav-chevron" />}</button>)}</nav>
     <div className="sidebar-bottom"><div className="privacy-note"><ShieldCheck size={17} /><div><strong>Your care, private</strong><span>Protected by HUBS security</span></div></div><button className="logout-button" onClick={onLogout}><LogOut size={17} /><span>Log out</span></button></div>
