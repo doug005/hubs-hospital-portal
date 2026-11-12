@@ -124,8 +124,23 @@ export function HubsProvider({ children }: { children: ReactNode }) {
     };
 
     const cancelAppointment = (id: string) => {
-      setState((current) => ({ ...current, appointments: current.appointments.map((item) => item.id === id ? { ...item, status: 'cancelled' } : item) }));
+      const appointment = state.appointments.find((item) => item.id === id);
+      const cancellationNotification = appointment ? {
+        id: `note-${Date.now()}`,
+        userId: appointment.patientId,
+        title: 'Appointment cancelled',
+        body: `Your appointment with ${appointment.doctorName} for ${appointment.date} at ${appointment.time} has been cancelled.`,
+        time: 'Just now',
+        read: false,
+        kind: 'appointment' as const,
+      } : null;
+      setState((current) => ({
+        ...current,
+        appointments: current.appointments.map((item) => item.id === id ? { ...item, status: 'cancelled' } : item),
+        notifications: cancellationNotification ? [cancellationNotification, ...current.notifications] : current.notifications,
+      }));
       if (firestore && firebaseConfigured) void updateDoc(doc(firestore, 'appointments', id), { status: 'cancelled' });
+      if (firestore && firebaseConfigured && cancellationNotification) void addDoc(collection(firestore, 'notifications'), cancellationNotification);
     };
 
     const rescheduleAppointment = (id: string, date: string, time: string) => {
